@@ -13,6 +13,9 @@ class CalculatorViewController: UIViewController {
   var tip: Double = 0.1 // as default heighlighted 10%
   var numberOfSplit: Int = 2 // as default shown number
   var billTotal: Double = 0.0
+  var defaultBillTotal = ""
+  
+  var finalBill = "0.0"
   
   @IBOutlet weak var billTextField: UITextField!
   @IBOutlet weak var zeroPctButton: UIButton!
@@ -24,6 +27,9 @@ class CalculatorViewController: UIViewController {
     //  close keyboard when pressed button with %
     billTextField.endEditing(true)
     
+    //    default value of bill total
+    var defaultBillTotal = billTextField.text
+
     //  Deselect all tip buttons via IBOutlets
     zeroPctButton.isSelected = false
     tenPctButton.isSelected = false
@@ -65,12 +71,38 @@ class CalculatorViewController: UIViewController {
       //  or use nil coalescing -> Double(bill) ?? 0.0
       //  Double(bill.replacingOccurrences(of: ",", with: "."))
       billTotal = Double(bill)!
+      
       //  numberOfSplit is Int -> Double
       let result = billTotal * (1 + tip) / Double(numberOfSplit)
+      
       // show it as string
       let resultTo2Decimal = String(format: "%.2f", result)
-      print(resultTo2Decimal)
+      //      print(resultTo2Decimal)
+      
+      // pass result into declared variable to reach it for segue
+      finalBill = resultTo2Decimal
+      
+      //  perfom seque - sender is CalculatorViewController itself
+      self.performSegue(withIdentifier: "goToResult", sender: self)
     }
-    
+    //    assign default value into 'bill total text' field
+    billTextField.text = defaultBillTotal
   }
+  
+  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    //  check if desired segue is triggered
+    if segue.identifier == "goToResult" {
+      
+      // new VC (ResultsVC) initialiaze when segue is triggered
+      let destinationRS = segue.destination as! ResultsViewController
+      
+      // is Datatype UIViewController as! ResultVC
+      // now I can reach property of ResultsVC and pass obj. into new VC
+      destinationRS.splitBill = finalBill // in ResultVC -> assign to label.text
+      destinationRS.numberOfPeople = numberOfSplit
+      destinationRS.tip = Int(tip * 100)
+    }
+   
+  }
+  
 }
