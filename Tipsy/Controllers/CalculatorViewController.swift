@@ -10,8 +10,9 @@ import UIKit
 
 class CalculatorViewController: UIViewController {
   
-  var tip = 0.1 // as default heighlighted 10%
-  var numberOfSplit = 2 // as default shown number
+  var tip: Double = 0.1 // as default heighlighted 10%
+  var numberOfSplit: Int = 2 // as default shown number
+  var billTotal: Double = 0.0
   
   @IBOutlet weak var billTextField: UITextField!
   @IBOutlet weak var zeroPctButton: UIButton!
@@ -20,6 +21,9 @@ class CalculatorViewController: UIViewController {
   @IBOutlet weak var splitNumberLabel: UILabel!
   
   @IBAction func tipChanged(_ sender: UIButton) {
+    //  close keyboard when pressed button with %
+    billTextField.endEditing(true)
+    
     //  Deselect all tip buttons via IBOutlets
     zeroPctButton.isSelected = false
     tenPctButton.isSelected = false
@@ -51,9 +55,22 @@ class CalculatorViewController: UIViewController {
   }
   
   @IBAction func calculatePressed(_ sender: UIButton) {
-    //  to get tip from tipChanged assign into declared variable above
-    print(tip)
-    print(numberOfSplit)
+    // get value from bill text field -> to String from optional '!'
+    // or billTextField.text! (unwrapp) -> nil coalescing
+    let bill = billTextField.text ?? "0.0"
+    
+    //  if filled bill value then calculate the sum
+    if bill != "" {
+      //  bill is String -> assign into my Double billTotal
+      //  or use nil coalescing -> Double(bill) ?? 0.0
+      //  Double(bill.replacingOccurrences(of: ",", with: "."))
+      billTotal = Double(bill)!
+      //  numberOfSplit is Int -> Double
+      let result = billTotal * (1 + tip) / Double(numberOfSplit)
+      // show it as string
+      let resultTo2Decimal = String(format: "%.2f", result)
+      print(resultTo2Decimal)
+    }
+    
   }
 }
-
