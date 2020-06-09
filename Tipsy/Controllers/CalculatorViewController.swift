@@ -11,6 +11,7 @@ import UIKit
 class CalculatorViewController: UIViewController {
   
   var tip = 0.1 // as default heighlighted 10%
+  var numberOfSplit = 2 // as default shown number
   
   @IBOutlet weak var billTextField: UITextField!
   @IBOutlet weak var zeroPctButton: UIButton!
@@ -27,8 +28,8 @@ class CalculatorViewController: UIViewController {
     //  Make the button that triggered the IBAction selected.
     sender.isSelected = true
     
-    // get info from pressed button
-    let buttonTitle = sender.currentTitle! // printed Optional("0%") /Strig?/ -> '!' -> String 0%
+    // get info when printed Optional("0%") /Strig?/ -> '!' -> String 0%
+    let buttonTitle = sender.currentTitle!
     
     // remove % character from String -> 0% -> 0; 10; 20
     let buttonTitleNoCharacter = buttonTitle.dropLast()
@@ -41,11 +42,18 @@ class CalculatorViewController: UIViewController {
   }
   
   @IBAction func stepperValueChanged(_ sender: UIStepper) {
+    //  splitNumberLabel is String -> sender.value Double -> convert
+    splitNumberLabel.text = String(format: "%.0f", sender.value)
+    
+    // not assign splitNumberLabel.text -> too much data change
+    // assign sender.value -> into Int whole number from Double
+    numberOfSplit = Int(sender.value)
   }
   
   @IBAction func calculatePressed(_ sender: UIButton) {
     //  to get tip from tipChanged assign into declared variable above
     print(tip)
+    print(numberOfSplit)
   }
 }
 
